@@ -55,6 +55,13 @@ https://sleazyfork.org/en/scripts/21024-pornhub-thumbnail
 let thumbnailer = GM_getValue(
 	"thumbnailer", true)
 
+/*
+searchSubmit enables submission
+with return on the advanced torrent
+search
+*/
+let searchSubmit = GM_getValue(
+    "searchSubmit", true);
 /*~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~*/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*       eslint-env jquery       */
@@ -197,5 +204,18 @@ if (thumbnailer) {
 			"</td>"
 		);
 	});
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+if (searchSubmit) {
+    let textArea = $("textarea#tags.inputtext");
+
+	if (textArea == null)
+		return;
+
+    textArea.parent().contents()
+        .filter(function(){return this.nodeType === 8;})
+        .replaceWith(function(){return this.data;});
+
+    textArea.remove();
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
