@@ -13,8 +13,7 @@
     An implementation of the userscript that inspired all this - 
     set large, often animated thumbnails for torrents while browsing
 ### Search Submit
-    Replaces the advanced search textarea input with 
-    the original basic search input field, allowing you to submit on return
+    Enables submission with return for the advanced torrent search by using the basic search input
 
 ---
 Everything is configurable, but I'm still working on the settings UI (did I mention I fucking hate javascript?) - the code is there and close. Once it's done I'll upload this bad boy to sleazyfork, but I wanted to give the community a peek at what I'm working on. That way folks can flame me and/or request features in the mean time.
