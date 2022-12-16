@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name		pr0nbay
 // @namespace	http://tampermonkey.net/
-// @version		0.2
+// @version		0.3
+// @downloadURL https://raw.githubusercontent.com/hetisnietgay/pr0nbay/master/pr0nbay.js
 // @description	pornbay.org enhancements.
 // @author		kayos
 // @match		https://pornbay.org/torrents.php*
