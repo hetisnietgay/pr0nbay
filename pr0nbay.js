@@ -6,11 +6,11 @@
 // @author		kayos
 // @match		https://pornbay.org/torrents.php*
 // @match		https://pornbay.org/top10.php*
+// @match       https://pornbay.org/collages.php?id=*
+// @match       https://pornbay.org/user.php*
 // @grant		GM_getValue
 // @grant		GM_setValue
-// @grant		GM_xmlhttpRequest
 // @grant		unsafeWindow
-// @grant		GM_addStyle
 // @require		https://raw.githubusercontent.com/AugmentedWeb/UserGui/main/usergui.js
 // @require		http://code.jquery.com/jquery-latest.js
 // ==/UserScript==
@@ -21,8 +21,9 @@ that when attributed to a torrent
 will hide that torrent search/browse/top10.
 */
 let hiddenTags = GM_getValue(
-		"hiddenTags", [])
-let filterTags = GM_getValue("filterTags", true)
+	"hiddenTags", [])
+let filterTags = GM_getValue(
+	"filterTags", true)
 
 /*
 expandSpoilers was actually built as a
@@ -61,7 +62,7 @@ with return on the advanced torrent
 search
 */
 let searchSubmit = GM_getValue(
-    "searchSubmit", true);
+	"searchSubmit", true);
 /*~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~*/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*       eslint-env jquery       */
@@ -83,9 +84,6 @@ Gui.addPage("pr0nbay", atob(
 	/*</payload>*/
 ));
 
-const re = /src=(.*\.\w{3,4})/;
-const olre = /var\s(overlay\d*)\s/;
-
 /*
 Gui.open(() => {
 	document.addEventListener(
@@ -102,6 +100,62 @@ Gui.open(() => {
 })
 */
 
+const re = /src=(.*\.\w{3,4})/;
+const olre = /var\s(overlay\d*)\s/;
+
+class pageType {
+	static browse = new pageType("browse");
+	static top10 = new pageType("top10");
+	static post = new pageType("post");
+	static collage = new pageType("collage");
+
+	constructor(name) {
+		this.name = name;
+	}
+
+	static checkURL(url) {
+		let type;
+		let userPost = url.searchParams.has("id");
+		let userTorrents = url.searchParams.has("userid");
+		if (url.pathname === "/torrents.php") {
+			if (userPost) {
+				type = this.post;
+			} else if (userTorrents) {
+				type = this.usertorrents;
+			} else {
+				type = this.browse;
+			}
+		} else if (url.pathname === "/top10.php") {
+			type = this.top10;
+		} else if (url.pathname === "/collages.php" && userPost) {
+			type = this.collage;
+		} else {
+			type = null;
+		}
+
+		return type;
+	}
+
+	toString() {
+		return this.name;
+	}
+}
+
+const url = new URL(unsafeWindow.location.href);
+const curType = pageType.checkURL(url);
+
+console.log(curType.toString);
+
+switch (curType) {
+	case (pageType.post):
+		thumbnailer = false;
+	break;
+	case (pageType.userTorrents):
+		hideSnatched = false;
+		hideSeeding = false;
+	break;
+}
+
 function log(s) {
 	let tn = new
 	Date(jQuery.now()).toISOString().split("T")[1];
@@ -115,10 +169,10 @@ function log(s) {
 console.log("\n"+atob(banner))
 log("init");
 
-if (FilterTags) {
+if (filterTags) {
 	log(
 		"avoiding " +
-		HiddenTags.length +
+		hiddenTags.length +
 		" total tags"
 	);
 }
@@ -142,7 +196,7 @@ if (filterTags) {
 		match.each(
 			function () {
 				if (!($.inArray($(this).text(),
-								HiddenTags) !== -1)) {
+								hiddenTags) !== -1)) {
 					return;
 				}
 				log("hide " + $(this).text());
@@ -207,15 +261,15 @@ if (thumbnailer) {
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 if (searchSubmit) {
-    let textArea = $("textarea#tags.inputtext");
+	let textArea = $("textarea#tags.inputtext");
 
 	if (textArea == null)
 		return;
 
-    textArea.parent().contents()
-        .filter(function(){return this.nodeType === 8;})
-        .replaceWith(function(){return this.data;});
+	textArea.parent().contents()
+		.filter(function(){return this.nodeType === 8;})
+		.replaceWith(function(){return this.data;});
 
-    textArea.remove();
+	textArea.remove();
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
