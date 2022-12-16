@@ -1,20 +1,19 @@
 
 # **pr0nbay**
-
-A pr0nbay exclusive userscript
+### A pr0nbay exclusive userscript
 
 ## Features
 
-### Tag filtering
+#### Tag filtering
     Filter out torrents with specific tags while browsing
-### Hide snatched 
+#### Hide snatched 
     Filter out previously snatched torrents while browsing
-### Expand spoilers
+#### Expand spoilers
     Automatically expand spoilers in torrent decscriptions
-### Thumbnailer
+#### Thumbnailer
     An implementation of the userscript that inspired all this - 
     set large, often animated thumbnails for torrents while browsing
-### Search Submit
+#### Search Submit
     Enables submission with return for the advanced torrent search by using the basic search input
 
 ---
