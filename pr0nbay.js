@@ -11,6 +11,7 @@
 // @grant		GM_getValue
 // @grant		GM_setValue
 // @grant		unsafeWindow
+// @grant       GM_xmlhttpRequest
 // @require		https://raw.githubusercontent.com/AugmentedWeb/UserGui/main/usergui.js
 // @require		http://code.jquery.com/jquery-latest.js
 // ==/UserScript==
@@ -108,6 +109,7 @@ class pageType {
     static top10 = new pageType("top10");
     static post = new pageType("post");
     static collage = new pageType("collage");
+    static usertorlist = new pageType("usertorlist");
 
     constructor(name) {
         this.name = name;
@@ -115,13 +117,13 @@ class pageType {
 
     static checkURL(url) {
         let type;
-        let userTorrents = url.searchParams.has("userid");
-        let userPost = (url.searchParams.has("id") && !userTorrents);
+        let userTorrentList = url.searchParams.has("userid");
+        let userPost = (url.searchParams.has("id") && !userTorrentList);
         if (url.pathname === "/torrents.php") {
             if (userPost) {
                 type = this.post;
-            } else if (userTorrents) {
-                type = this.usertorrents;
+            } else if (userTorrentList) {
+                type = this.usertorlist;
             } else {
                 type = this.browse;
             }
@@ -150,9 +152,11 @@ switch (curType) {
     case (pageType.post):
         thumbnailer = false;
         break;
-    case (pageType.userTorrents):
+    case (pageType.usertorlist):
         hideSnatched = false;
         hideSeeding = false;
+        break;
+    case (null):
         break;
 }
 
@@ -265,9 +269,9 @@ if (searchSubmit) {
 
     if (textArea != null) {
         textArea.parent().contents()
-            .filter(function(){return this.nodeType === 8;})
-            .replaceWith(function(){return this.data;});
-          textArea.remove();
+            .filter(function () { return this.nodeType === 8; })
+            .replaceWith(function () { return this.data; });
+        textArea.remove();
     }
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
