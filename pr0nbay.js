@@ -137,7 +137,7 @@ class pageType {
             type = this.user;
 
             if (userId = url.searchParams.get("id")) {
-                type = this.post;
+                type = this.ownTorrent;
             }
         }
         return type;
