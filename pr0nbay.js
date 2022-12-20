@@ -110,21 +110,22 @@ class pageType {
     static top10 = new pageType("top10");
     static post = new pageType("post");
     static collage = new pageType("collage");
-    static usertorlist = new pageType("usertorlist");
+    static user = new pageType("user");
+    static ownTorrent = new pageType("ownTorrent")
 
     constructor(name) {
         this.name = name;
     }
 
     static checkURL(url) {
-        let type;
-        let userTorrentList = url.searchParams.has("userid");
-        let userPost = (url.searchParams.has("id") && !userTorrentList);
+        let type = null;
+        let userId = (new URL($(".username")[0].href)).searchParams.get("id");
+        let userPost = url.searchParams.has("id");
         if (url.pathname === "/torrents.php") {
             if (userPost) {
                 type = this.post;
-            } else if (userTorrentList) {
-                type = this.usertorlist;
+            } else if (userId = url.searchParams.get("userid")) {
+                type = this.ownTorrent
             } else {
                 type = this.browse;
             }
@@ -132,10 +133,13 @@ class pageType {
             type = this.top10;
         } else if (url.pathname === "/collages.php" && userPost) {
             type = this.collage;
-        } else {
-            type = null;
-        }
+        } else if (url.pathname === "/user.php") {
+            type = this.user;
 
+            if (userId = url.searchParams.get("id")) {
+                type = this.post;
+            }
+        }
         return type;
     }
 
@@ -147,13 +151,13 @@ class pageType {
 const url = new URL(unsafeWindow.location.href);
 const curType = pageType.checkURL(url);
 
-console.log(curType.toString);
+console.log(curType.toString());
 
 switch (curType) {
     case (pageType.post):
         thumbnailer = false;
         break;
-    case (pageType.usertorlist):
+    case (pageType.ownTorrent):
         hideSnatched = false;
         hideSeeding = false;
         break;
